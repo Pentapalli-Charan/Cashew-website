@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Dashboard – Palasa Cashew Delivery</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link rel="stylesheet" href="/static/css/admin.css"/>
+</head>
+<body>
+
+{% if not logged_in %}
+<!-- ══ Login Gate ══════════════════════════════════════════════════ -->
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="icon">🥜</span>
+      <h1>Admin Login</h1>
+      <p>Palasa Cashew Delivery</p>
+    </div>
+    {% if error %}
+    <div class="login-error" id="login-error">⚠️ {{ error }}</div>
+    {% endif %}
+    <form method="POST" action="/admin" id="admin-login-form">
+      <label for="admin-password">Admin Password</label>
+      <input type="password" id="admin-password" name="password" placeholder="Enter admin password" required autofocus autocomplete="current-password"/>
+      <button type="submit" class="login-btn">🔐 Sign In</button>
+    </form>
+    <p style="text-align:center;margin-top:1.2rem;font-size:.82rem;color:var(--muted)">
+      <a href="/" style="color:var(--gold)">← Back to Store</a>
+    </p>
+  </div>
+</div>
+
+{% else %}
+<!-- ══ Admin Dashboard ════════════════════════════════════════════ -->
+<div class="admin-layout">
+
+  <!-- Header -->
+  <header class="admin-header" id="admin-header">
+    <h1>
+      <span class="icon">🥜</span>
+      <span class="title-text">Cashew Delivery — Orders Dashboard</span>
+    </h1>
+    <div style="display:flex;align-items:center;gap:.8rem">
+      <a href="/" style="color:rgba(255,255,255,.7);font-size:.85rem">🌐 View Store</a>
+      <a href="/admin/logout" class="logout-btn" id="logout-btn">Logout</a>
+    </div>
+  </header>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card total">
+      <div class="num" id="stat-total">…</div>
+      <div class="lbl">Total Orders</div>
+    </div>
+    <div class="stat-card pending">
+      <div class="num" id="stat-pending">…</div>
+      <div class="lbl">Pending</div>
+    </div>
+    <div class="stat-card packed">
+      <div class="num" id="stat-packed">…</div>
+      <div class="lbl">Packed</div>
+    </div>
+    <div class="stat-card delivered">
+      <div class="num" id="stat-delivered">…</div>
+      <div class="lbl">Delivered</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls" id="controls">
+    <div class="search-box">
+      <span>🔍</span>
+      <input type="text" id="search-input" placeholder="Search by name, phone, or order ID…" autocomplete="off"/>
+    </div>
+    <select class="filter-select" id="status-filter">
+      <option value="">All Statuses</option>
+      <option value="Pending">Pending</option>
+      <option value="Packed">Packed</option>
+      <option value="Delivered">Delivered</option>
+    </select>
+    <button class="refresh-btn" id="refresh-btn">↻ Refresh</button>
+  </div>
+
+  <!-- Orders Table -->
+  <div class="orders-wrap" id="orders-wrap">
+    <table class="orders-table" id="orders-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Pack</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="orders-tbody">
+        <tr><td colspan="9"><div class="empty-state"><span class="icon">⏳</span>Loading orders…</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+<script src="/static/js/admin.js"></script>
+{% endif %}
+
+</body>
+</html>
