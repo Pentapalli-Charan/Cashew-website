@@ -1,0 +1,11 @@
+# SQLite database (generated at runtime, should never be committed)
+database.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+.env

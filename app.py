@@ -16,7 +16,13 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "cashew-secret-2024-syamala")
 
 # ── Config ──────────────────────────────────────────────────────────────────
-DATABASE = os.path.join(os.path.dirname(__file__), "database.db")
+# On Render the filesystem is ephemeral; /tmp persists for the lifetime of the
+# running instance and is writable. For local dev we use the project directory.
+if os.environ.get("RENDER"):
+    DATABASE = "/tmp/database.db"
+else:
+    DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "database.db")
+
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "cashew@admin123")
 
 PRODUCTS = {
@@ -191,8 +197,16 @@ def update_status(order_id):
     return jsonify({"success": True})
 
 
+# ── Database initialisation ──────────────────────────────────────────────────
+# This block runs at module import time, so it is executed by both:
+#   • Gunicorn / Render:  gunicorn app:app
+#   • Local development:  python app.py
+# The "with app.app_context()" ensures Flask's application context is active
+# before we touch the database.
+with app.app_context():
+    init_db()
+
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True, host="0.0.0.0", port=5000)
